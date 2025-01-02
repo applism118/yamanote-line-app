@@ -10,8 +10,8 @@ import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/
 import { cn } from "@/lib/utils";
 
 export default function Home() {
-  const [fromStation, setFromStation] = useState<string>(stations[0].name);
-  const [toStation, setToStation] = useState<string>(stations[1].name);
+  const [fromStation, setFromStation] = useState<string>("");
+  const [toStation, setToStation] = useState<string>("");
   const [startTime, setStartTime] = useState<Date>(new Date());
   const [direction, setDirection] = useState<Direction>("clockwise");
   const [selectionMode, setSelectionMode] = useState<"text" | "map">("text");
@@ -26,6 +26,17 @@ export default function Home() {
       setSelectionStep("from");
     }
   };
+
+  // Calculate intermediate stations for the selected route
+  const getIntermediateStations = () => {
+    if (!fromStation || !toStation) return [];
+    const route = calculateRoute(fromStation, toStation, walkingSpeeds[0].speedKmh, startTime, direction);
+    return route.stations
+      .slice(1, -1) // Exclude first (from) and last (to) stations
+      .map(station => station.name);
+  };
+
+  const intermediateStations = getIntermediateStations();
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
@@ -70,6 +81,7 @@ export default function Home() {
                       stations={stations}
                       selectedFrom={fromStation}
                       selectedTo={toStation}
+                      intermediateStations={intermediateStations}
                       onSelectStation={handleMapStationSelect}
                     />
                   </div>
@@ -124,7 +136,7 @@ export default function Home() {
           </Card>
 
           <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-2">
-            {walkingSpeeds.map((speed) => (
+            {fromStation && toStation && walkingSpeeds.map((speed) => (
               <Card key={speed.name}>
                 <CardHeader>
                   <CardTitle className="text-lg">{speed.label}</CardTitle>

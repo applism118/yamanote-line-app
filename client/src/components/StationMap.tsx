@@ -5,6 +5,7 @@ interface StationMapProps {
   stations: Station[];
   selectedFrom?: string;
   selectedTo?: string;
+  intermediateStations?: string[];
   onSelectStation: (stationName: string) => void;
 }
 
@@ -12,6 +13,7 @@ export default function StationMap({
   stations, 
   selectedFrom,
   selectedTo,
+  intermediateStations = [],
   onSelectStation 
 }: StationMapProps) {
   const radius = 160; // SVG circle radius
@@ -52,6 +54,7 @@ export default function StationMap({
 
             const isFrom = station.name === selectedFrom;
             const isTo = station.name === selectedTo;
+            const isIntermediate = intermediateStations.includes(station.name);
 
             // Get special positioning adjustments for this station
             const adjustment = stationAdjustments[station.name] || {};
@@ -73,7 +76,9 @@ export default function StationMap({
                       ? "fill-blue-500 stroke-blue-500" 
                       : isTo
                         ? "fill-red-500 stroke-red-500"
-                        : "fill-white stroke-gray-400 hover:fill-gray-100"
+                        : isIntermediate
+                          ? "fill-green-700 stroke-green-700"
+                          : "fill-white stroke-gray-400 hover:fill-gray-100"
                   )}
                   strokeWidth="2"
                 />
@@ -88,7 +93,8 @@ export default function StationMap({
                   className={cn(
                     "text-[10px] cursor-pointer select-none",
                     isFrom && "fill-blue-500 font-medium",
-                    isTo && "fill-red-500 font-medium"
+                    isTo && "fill-red-500 font-medium",
+                    isIntermediate && "fill-green-700 font-medium"
                   )}
                 >
                   {station.name}
