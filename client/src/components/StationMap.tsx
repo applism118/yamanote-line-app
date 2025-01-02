@@ -21,10 +21,14 @@ export default function StationMap({
 
   // Special positioning adjustments for specific stations
   const stationAdjustments: Record<string, { dx?: number; dy?: number }> = {
-    "高田馬場": { dy: -12 },
-    "新大久保": { dy: 12 },
-    "新宿": { dx: -24 },
-    "高輪ゲートウェイ": { dx: 24, dy: 6 }
+    "高田馬場": { dy: -8 },
+    "新大久保": { dy: 8 },
+    "新宿": { dx: -12 },
+    "品川": { dx: 12 },
+    "高輪ゲートウェイ": { dx: 24 },
+    "大崎": { dx: 12, dy: 4 },
+    "渋谷": { dx: -12 },
+    "池袋": { dy: -8 }
   };
 
   return (
@@ -58,8 +62,7 @@ export default function StationMap({
 
             // Get special positioning adjustments for this station
             const adjustment = stationAdjustments[station.name] || {};
-            const baseOffset = 16; // Increased base offset for better spacing
-            const textDx = x > center ? baseOffset : -baseOffset;
+            const baseOffset = 32; // Increased base offset for better spacing
             const finalDx = (adjustment.dx || 0) + (x > center ? baseOffset : -baseOffset);
             const finalDy = adjustment.dy || 0;
 
