@@ -12,7 +12,6 @@ export default function Home() {
   const [toStation, setToStation] = useState<string>(stations[1].name);
   const [startTime, setStartTime] = useState<Date>(new Date());
   const [direction, setDirection] = useState<Direction>("clockwise");
-  const [selectedSpeed, setSelectedSpeed] = useState<string>("normal");
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
@@ -96,7 +95,7 @@ export default function Home() {
               <CardTitle>所要時間比較</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto mb-6">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b">
@@ -112,14 +111,7 @@ export default function Home() {
                       const minutes = Math.round(hours * 60);
 
                       return (
-                        <tr 
-                          key={speed.name}
-                          className={cn(
-                            "border-b cursor-pointer hover:bg-gray-50",
-                            selectedSpeed === speed.name && "bg-gray-50"
-                          )}
-                          onClick={() => setSelectedSpeed(speed.name)}
-                        >
+                        <tr key={speed.name} className="border-b">
                           <td className="p-2">{speed.label}</td>
                           <td className="p-2">{route.totalDistance.toFixed(1)} km</td>
                           <td className="p-2">{minutes} 分</td>
@@ -130,17 +122,17 @@ export default function Home() {
                 </table>
               </div>
 
-              {/* 選択された歩行速度のルート詳細を表示 */}
-              {selectedSpeed && (() => {
-                const speed = walkingSpeeds.find(s => s.name === selectedSpeed)!;
-                const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
-                return (
-                  <div className="mt-6">
-                    <h3 className="font-medium mb-4">{speed.label}での詳細ルート</h3>
-                    <RouteTimeline stations={route.stations} />
-                  </div>
-                );
-              })()}
+              <div className="grid md:grid-cols-3 gap-4">
+                {walkingSpeeds.map((speed) => {
+                  const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
+                  return (
+                    <div key={speed.name}>
+                      <h3 className="font-medium mb-4">{speed.label}での詳細ルート</h3>
+                      <RouteTimeline stations={route.stations} />
+                    </div>
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
         </div>
