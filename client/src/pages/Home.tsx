@@ -21,7 +21,7 @@ export default function Home() {
         </h1>
 
         <div className="grid gap-4 sm:gap-6 md:gap-8">
-          <Card>
+          <Card className="order-1">
             <CardHeader>
               <CardTitle>ルート設定</CardTitle>
             </CardHeader>
@@ -90,62 +90,33 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>所要時間比較</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto mb-6">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-2">歩行速度</th>
-                      <th className="text-left p-2">総距離</th>
-                      <th className="text-left p-2">予想所要時間</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {walkingSpeeds.map((speed) => {
-                      const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
-                      const hours = (route.totalDistance / speed.speedKmh);
-                      const minutes = Math.round(hours * 60);
-
-                      return (
-                        <tr key={speed.name} className="border-b">
-                          <td className="p-2">{speed.label}</td>
-                          <td className="p-2">{route.totalDistance.toFixed(1)} km</td>
-                          <td className="p-2">{minutes} 分</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mb-4">
-                <div className="flex justify-between">
-                  {walkingSpeeds.map((speed) => (
-                    <h3 key={speed.name} className="font-medium flex-1 text-center">
-                      {speed.label}での詳細ルート
-                    </h3>
-                  ))}
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <div className="flex gap-4 min-w-[900px]">
-                  {walkingSpeeds.map((speed) => {
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-2">
+            {walkingSpeeds.map((speed) => (
+              <Card key={speed.name}>
+                <CardHeader>
+                  <CardTitle className="text-lg">{speed.label}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
                     const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
                     return (
-                      <div key={speed.name} className="flex-1">
+                      <>
+                        <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
+                          <p className="text-sm sm:text-base text-gray-600">
+                            総距離: {route.totalDistance.toFixed(1)} km
+                          </p>
+                          <p className="text-sm sm:text-base text-gray-600">
+                            予想所要時間: {(route.totalDistance / speed.speedKmh).toFixed(1)} 時間
+                          </p>
+                        </div>
                         <RouteTimeline stations={route.stations} />
-                      </div>
+                      </>
                     );
-                  })}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                  })()}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
