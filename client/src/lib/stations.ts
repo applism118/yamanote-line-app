@@ -76,7 +76,7 @@ export const calculateRoute = (
     const timeHours = distance / speedKmh;
     const timeMs = timeHours * 60 * 60 * 1000;
 
-    if (direction === "counterclockwise") {
+    if (direction === "clockwise") {
       currentIdx = (currentIdx + 1) % stations.length;
     } else {
       currentIdx = (currentIdx - 1 + stations.length) % stations.length;
