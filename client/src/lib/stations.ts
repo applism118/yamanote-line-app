@@ -48,15 +48,18 @@ export const walkingSpeeds: WalkingSpeed[] = [
   { name: "fast", speedKmh: 6, label: "速く歩く (6 km/h)" }
 ];
 
+export type Direction = "clockwise" | "counterclockwise";
+
 export const calculateRoute = (
   fromStation: string,
   toStation: string,
   speedKmh: number,
-  startTime: Date
+  startTime: Date,
+  direction: Direction = "clockwise"
 ): { stations: Array<{ name: string; arrivalTime: Date }>, totalDistance: number } => {
   const fromIdx = stations.findIndex(s => s.name === fromStation);
   const toIdx = stations.findIndex(s => s.name === toStation);
-  
+
   if (fromIdx === -1 || toIdx === -1) {
     throw new Error("Invalid stations");
   }
@@ -64,7 +67,7 @@ export const calculateRoute = (
   const route: Array<{ name: string; arrivalTime: Date }> = [];
   let currentTime = new Date(startTime);
   let totalDistance = 0;
-  
+
   let currentIdx = fromIdx;
   route.push({ name: stations[currentIdx].name, arrivalTime: new Date(currentTime) });
 
@@ -72,11 +75,16 @@ export const calculateRoute = (
     const distance = stations[currentIdx].nextDistance;
     const timeHours = distance / speedKmh;
     const timeMs = timeHours * 60 * 60 * 1000;
-    
-    currentIdx = (currentIdx + 1) % stations.length;
+
+    if (direction === "clockwise") {
+      currentIdx = (currentIdx + 1) % stations.length;
+    } else {
+      currentIdx = (currentIdx - 1 + stations.length) % stations.length;
+    }
+
     currentTime = new Date(currentTime.getTime() + timeMs);
     totalDistance += distance;
-    
+
     route.push({
       name: stations[currentIdx].name,
       arrivalTime: new Date(currentTime)

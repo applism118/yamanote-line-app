@@ -4,13 +4,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import StationSelect from "../components/StationSelect";
 import RouteTimeline from "../components/RouteTimeline";
-import { stations, walkingSpeeds, calculateRoute } from "../lib/stations";
+import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/stations";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [fromStation, setFromStation] = useState<string>(stations[0].name);
   const [toStation, setToStation] = useState<string>(stations[1].name);
   const [startTime, setStartTime] = useState<Date>(new Date());
+  const [direction, setDirection] = useState<Direction>("clockwise");
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
@@ -40,6 +41,28 @@ export default function Home() {
                     onChange={setToStation}
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label className="mb-1.5 block">進行方向</Label>
+                <RadioGroup
+                  value={direction}
+                  onValueChange={(val: Direction) => setDirection(val)}
+                  className="grid gap-2"
+                >
+                  <div className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded-md">
+                    <RadioGroupItem value="clockwise" id="clockwise" />
+                    <Label htmlFor="clockwise" className="flex-1 cursor-pointer">
+                      時計回り
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded-md">
+                    <RadioGroupItem value="counterclockwise" id="counterclockwise" />
+                    <Label htmlFor="counterclockwise" className="flex-1 cursor-pointer">
+                      反時計回り
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
 
               <div>
@@ -75,7 +98,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   {(() => {
-                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime);
+                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
                     return (
                       <>
                         <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
