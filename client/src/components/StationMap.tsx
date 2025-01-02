@@ -1,18 +1,21 @@
 import { type Station } from "../lib/stations";
 import { cn } from "@/lib/utils";
+import type { Direction } from "../lib/stations";
 
 interface StationMapProps {
   stations: Station[];
   selectedFrom?: string;
   selectedTo?: string;
   onSelectStation: (stationName: string) => void;
+  direction: Direction;
 }
 
 export default function StationMap({ 
   stations, 
   selectedFrom,
   selectedTo,
-  onSelectStation 
+  onSelectStation,
+  direction
 }: StationMapProps) {
   const radius = 160; // SVG circle radius
   const center = 200; // Center point of the SVG
@@ -23,6 +26,45 @@ export default function StationMap({
     "新大久保": { dy: 12 },
     "新宿": { dx: -24 },
     "高輪ゲートウェイ": { dx: 24, dy: 6 }
+  };
+
+  const getStationIndex = (stationName: string) => 
+    stations.findIndex(s => s.name === stationName);
+
+  // Calculate the SVG path for the route
+  const getRoutePath = () => {
+    if (!selectedFrom || !selectedTo) return null;
+
+    const fromIdx = getStationIndex(selectedFrom);
+    const toIdx = getStationIndex(selectedTo);
+
+    if (fromIdx === -1 || toIdx === -1) return null;
+
+    // Calculate start and end angles
+    const startAngle = (fromIdx * 360) / stations.length - 90;
+    const endAngle = (toIdx * 360) / stations.length - 90;
+
+    // Determine the sweep based on direction and position
+    let sweep: boolean;
+    if (direction === "clockwise") {
+      sweep = startAngle <= endAngle;
+    } else {
+      sweep = startAngle >= endAngle;
+    }
+
+    // Generate the SVG arc path
+    const start = {
+      x: center + radius * Math.cos(startAngle * Math.PI / 180),
+      y: center + radius * Math.sin(startAngle * Math.PI / 180)
+    };
+    const end = {
+      x: center + radius * Math.cos(endAngle * Math.PI / 180),
+      y: center + radius * Math.sin(endAngle * Math.PI / 180)
+    };
+
+    return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${
+      Math.abs(endAngle - startAngle) > 180 ? 1 : 0
+    } ${sweep ? 0 : 1} ${end.x} ${end.y}`;
   };
 
   return (
@@ -42,6 +84,17 @@ export default function StationMap({
             strokeWidth="20"
             className="opacity-20"
           />
+
+          {/* Route path */}
+          {selectedFrom && selectedTo && (
+            <path
+              d={getRoutePath() || ""}
+              fill="none"
+              stroke="#22c55e"
+              strokeWidth="20"
+              className="opacity-60"
+            />
+          )}
 
           {/* Station dots and labels */}
           {stations.map((station, idx) => {
