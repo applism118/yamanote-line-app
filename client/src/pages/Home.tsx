@@ -10,8 +10,8 @@ import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/
 import { cn } from "@/lib/utils";
 
 export default function Home() {
-  const [fromStation, setFromStation] = useState<string>("");
-  const [toStation, setToStation] = useState<string>("");
+  const [fromStation, setFromStation] = useState<string>(stations[0].name);
+  const [toStation, setToStation] = useState<string>(stations[1].name);
   const [startTime, setStartTime] = useState<Date>(new Date());
   const [direction, setDirection] = useState<Direction>("clockwise");
   const [selectionMode, setSelectionMode] = useState<"text" | "map">("text");
@@ -70,7 +70,7 @@ export default function Home() {
                       stations={stations}
                       selectedFrom={fromStation}
                       selectedTo={toStation}
-                      direction={direction}
+                      onSelectStation={handleMapStationSelect}
                     />
                   </div>
                 </TabsContent>
@@ -124,7 +124,7 @@ export default function Home() {
           </Card>
 
           <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-2">
-            {fromStation && toStation ? walkingSpeeds.map((speed) => (
+            {walkingSpeeds.map((speed) => (
               <Card key={speed.name}>
                 <CardHeader>
                   <CardTitle className="text-lg">{speed.label}</CardTitle>
@@ -148,11 +148,7 @@ export default function Home() {
                   })()}
                 </CardContent>
               </Card>
-            )) : (
-              <div className="lg:col-span-3 text-center text-gray-500 py-8">
-                出発駅と到着駅を選択してください
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
