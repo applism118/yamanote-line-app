@@ -16,26 +16,26 @@ export default function StationMap({
   intermediateStations = [],
   onSelectStation 
 }: StationMapProps) {
-  const radius = 160; // SVG circle radius
-  const center = 200; // Center point of the SVG
+  const radius = 180; // SVG circle radius
+  const center = 250; // Center point of the SVG
 
   // Special positioning adjustments for specific stations
   const stationAdjustments: Record<string, { dx?: number; dy?: number }> = {
-    "高田馬場": { dy: -8 },
-    "新大久保": { dy: 8 },
-    "新宿": { dx: -12 },
-    "品川": { dx: 12 },
-    "高輪ゲートウェイ": { dx: 24 },
-    "大崎": { dx: 12, dy: 4 },
-    "渋谷": { dx: -12 },
-    "池袋": { dy: -8 }
+    "高田馬場": { dy: -6 },
+    "新大久保": { dy: 6 },
+    "新宿": { dx: -8 },
+    "品川": { dx: 8 },
+    "高輪ゲートウェイ": { dx: 16 },
+    "大崎": { dx: 8, dy: 4 },
+    "渋谷": { dx: -8 },
+    "池袋": { dy: -6 }
   };
 
   return (
     <div className="space-y-4">
-      <div className="w-full aspect-square max-w-[400px] mx-auto">
+      <div className="w-full aspect-square max-w-[500px] mx-auto">
         <svg 
-          viewBox="0 0 400 400" 
+          viewBox="0 0 500 500" 
           className="w-full h-full"
         >
           {/* Circle track */}
@@ -62,7 +62,7 @@ export default function StationMap({
 
             // Get special positioning adjustments for this station
             const adjustment = stationAdjustments[station.name] || {};
-            const baseOffset = 32; // Increased base offset for better spacing
+            const baseOffset = 24; // Adjusted base offset for better spacing
             const finalDx = (adjustment.dx || 0) + (x > center ? baseOffset : -baseOffset);
             const finalDy = adjustment.dy || 0;
 
@@ -94,7 +94,7 @@ export default function StationMap({
                   dy={finalDy}
                   textAnchor={x > center ? "start" : "end"}
                   className={cn(
-                    "text-[10px] cursor-pointer select-none",
+                    "text-[12px] cursor-pointer select-none",
                     isFrom && "fill-blue-500 font-medium",
                     isTo && "fill-red-500 font-medium",
                     isIntermediate && "fill-green-700 font-medium"
