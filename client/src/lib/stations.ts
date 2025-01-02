@@ -4,18 +4,6 @@ export interface Station {
 }
 
 export const stations: Station[] = [
-  { name: "東京", nextDistance: 1.657 },
-  { name: "神田", nextDistance: 0.892 },
-  { name: "秋葉原", nextDistance: 1.275 },
-  { name: "御徒町", nextDistance: 0.765 },
-  { name: "上野", nextDistance: 1.403 },
-  { name: "鶯谷", nextDistance: 1.403 },
-  { name: "日暮里", nextDistance: 0.638 },
-  { name: "西日暮里", nextDistance: 1.020 },
-  { name: "田端", nextDistance: 2.040 },
-  { name: "駒込", nextDistance: 0.893 },
-  { name: "巣鴨", nextDistance: 1.403 },
-  { name: "大塚", nextDistance: 2.295 },
   { name: "池袋", nextDistance: 1.530 },
   { name: "目白", nextDistance: 1.148 },
   { name: "高田馬場", nextDistance: 1.785 },
@@ -33,7 +21,19 @@ export const stations: Station[] = [
   { name: "田町", nextDistance: 1.913 },
   { name: "浜松町", nextDistance: 1.530 },
   { name: "新橋", nextDistance: 1.403 },
-  { name: "有楽町", nextDistance: 1.020 }
+  { name: "有楽町", nextDistance: 1.020 },
+  { name: "東京", nextDistance: 1.657 },
+  { name: "神田", nextDistance: 0.892 },
+  { name: "秋葉原", nextDistance: 1.275 },
+  { name: "御徒町", nextDistance: 0.765 },
+  { name: "上野", nextDistance: 1.403 },
+  { name: "鶯谷", nextDistance: 1.403 },
+  { name: "日暮里", nextDistance: 0.638 },
+  { name: "西日暮里", nextDistance: 1.020 },
+  { name: "田端", nextDistance: 2.040 },
+  { name: "駒込", nextDistance: 0.893 },
+  { name: "巣鴨", nextDistance: 1.403 },
+  { name: "大塚", nextDistance: 2.295 }
 ];
 
 export interface WalkingSpeed {
