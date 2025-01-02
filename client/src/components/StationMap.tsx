@@ -23,16 +23,20 @@ export default function StationMap({
   const stationAdjustments: Record<string, { dx?: number; dy?: number; anchor?: string }> = {
     "池袋": { dy: -20, anchor: "middle" },
     "大塚": { dy: -20, anchor: "middle" },
+    "巣鴨": { dy: -20, anchor: "middle" },
+    "目白": { dy: -20, anchor: "middle" },
     "浜松町": { dy: 20, anchor: "middle" },
     "高輪ゲートウェイ": { dy: 20, anchor: "middle" },
     "田町": { dy: 20, anchor: "middle" },
     "新橋": { dy: 20, anchor: "middle" },
     "有楽町": { dy: 20, anchor: "middle" },
+    "品川": { dy: 20, anchor: "middle" },
+    "東京": { dy: 20, anchor: "middle" },
+    "神田": { dy: 20, anchor: "middle" },
     "新宿": { dx: -8 },
     "渋谷": { dx: -8 },
     "高田馬場": { dy: -6 },
     "新大久保": { dy: 6 },
-    "品川": { dx: 8 },
     "大崎": { dx: 8, dy: 4 }
   };
 
