@@ -122,16 +122,27 @@ export default function Home() {
                 </table>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4">
-                {walkingSpeeds.map((speed) => {
-                  const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
-                  return (
-                    <div key={speed.name}>
-                      <h3 className="font-medium mb-4">{speed.label}での詳細ルート</h3>
-                      <RouteTimeline stations={route.stations} />
-                    </div>
-                  );
-                })}
+              <div className="mb-4">
+                <div className="flex justify-between">
+                  {walkingSpeeds.map((speed) => (
+                    <h3 key={speed.name} className="font-medium flex-1 text-center">
+                      {speed.label}での詳細ルート
+                    </h3>
+                  ))}
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <div className="flex gap-4 min-w-[900px]">
+                  {walkingSpeeds.map((speed) => {
+                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
+                    return (
+                      <div key={speed.name} className="flex-1">
+                        <RouteTimeline stations={route.stations} />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </CardContent>
           </Card>
