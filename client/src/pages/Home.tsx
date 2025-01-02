@@ -10,20 +10,17 @@ import { cn } from "@/lib/utils";
 export default function Home() {
   const [fromStation, setFromStation] = useState<string>(stations[0].name);
   const [toStation, setToStation] = useState<string>(stations[1].name);
-  const [speed, setSpeed] = useState<number>(5);
   const [startTime, setStartTime] = useState<Date>(new Date());
-
-  const route = calculateRoute(fromStation, toStation, speed, startTime);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
           山手線ウォーキングプランナー
         </h1>
 
-        <div className="grid gap-4 sm:gap-6 md:gap-8 lg:grid-cols-[1fr_2fr]">
-          <Card className="order-2 lg:order-1">
+        <div className="grid gap-4 sm:gap-6 md:gap-8">
+          <Card className="order-1">
             <CardHeader>
               <CardTitle>ルート設定</CardTitle>
             </CardHeader>
@@ -43,28 +40,6 @@ export default function Home() {
                     onChange={setToStation}
                   />
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="mb-1.5 block">歩行速度</Label>
-                <RadioGroup
-                  value={speed.toString()}
-                  onValueChange={(val) => setSpeed(Number(val))}
-                  className="grid gap-2"
-                >
-                  {walkingSpeeds.map((ws) => (
-                    <div key={ws.name} className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded-md">
-                      <RadioGroupItem
-                        value={ws.speedKmh.toString()}
-                        id={ws.name}
-                        className="w-5 h-5"
-                      />
-                      <Label htmlFor={ws.name} className="flex-1 cursor-pointer">
-                        {ws.label}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
               </div>
 
               <div>
@@ -92,22 +67,33 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card className="order-1 lg:order-2">
-            <CardHeader>
-              <CardTitle>ルート詳細</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
-                <p className="text-sm sm:text-base text-gray-600">
-                  総距離: {route.totalDistance.toFixed(1)} km
-                </p>
-                <p className="text-sm sm:text-base text-gray-600">
-                  予想所要時間: {(route.totalDistance / speed).toFixed(1)} 時間
-                </p>
-              </div>
-              <RouteTimeline stations={route.stations} />
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-2">
+            {walkingSpeeds.map((speed) => (
+              <Card key={speed.name}>
+                <CardHeader>
+                  <CardTitle className="text-lg">{speed.label}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
+                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime);
+                    return (
+                      <>
+                        <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
+                          <p className="text-sm sm:text-base text-gray-600">
+                            総距離: {route.totalDistance.toFixed(1)} km
+                          </p>
+                          <p className="text-sm sm:text-base text-gray-600">
+                            予想所要時間: {(route.totalDistance / speed.speedKmh).toFixed(1)} 時間
+                          </p>
+                        </div>
+                        <RouteTimeline stations={route.stations} />
+                      </>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
