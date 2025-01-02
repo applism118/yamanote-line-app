@@ -17,6 +17,14 @@ export default function StationMap({
   const radius = 160; // SVG circle radius
   const center = 200; // Center point of the SVG
 
+  // Special positioning adjustments for specific stations
+  const stationAdjustments: Record<string, { dx?: number; dy?: number }> = {
+    "高田馬場": { dy: -12 },
+    "新大久保": { dy: 12 },
+    "新宿": { dx: -24 },
+    "高輪ゲートウェイ": { dx: 24, dy: 6 }
+  };
+
   return (
     <div className="space-y-4">
       <div className="w-full aspect-square max-w-[400px] mx-auto">
@@ -45,6 +53,13 @@ export default function StationMap({
             const isFrom = station.name === selectedFrom;
             const isTo = station.name === selectedTo;
 
+            // Get special positioning adjustments for this station
+            const adjustment = stationAdjustments[station.name] || {};
+            const baseOffset = 16; // Increased base offset for better spacing
+            const textDx = x > center ? baseOffset : -baseOffset;
+            const finalDx = (adjustment.dx || 0) + (x > center ? baseOffset : -baseOffset);
+            const finalDy = adjustment.dy || 0;
+
             return (
               <g key={station.name} onClick={() => onSelectStation(station.name)}>
                 {/* Station dot */}
@@ -67,8 +82,8 @@ export default function StationMap({
                 <text
                   x={x}
                   y={y}
-                  dx={x > center ? "12" : "-12"}
-                  dy="0"
+                  dx={finalDx}
+                  dy={finalDy}
                   textAnchor={x > center ? "start" : "end"}
                   className={cn(
                     "text-[10px] cursor-pointer select-none",
