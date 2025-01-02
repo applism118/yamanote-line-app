@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import StationSelect from "../components/StationSelect";
 import RouteTimeline from "../components/RouteTimeline";
+import RouteMap from "../components/RouteMap";
 import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/stations";
 import { cn } from "@/lib/utils";
 
@@ -90,7 +91,20 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-2">
+          <Card className="order-2">
+            <CardHeader>
+              <CardTitle>ルートマップ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RouteMap
+                fromStation={fromStation}
+                toStation={toStation}
+                direction={direction}
+              />
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-3">
             {walkingSpeeds.map((speed) => (
               <Card key={speed.name}>
                 <CardHeader>
