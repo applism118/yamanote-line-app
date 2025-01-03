@@ -49,27 +49,6 @@ export default function StationMap({
     "大崎": { dx: 8, dy: 4 }
   };
 
-  // Function to find station position by name
-  const findStationPosition = (name: string) => 
-    stationPositions.find(pos => pos.station.name === name);
-
-  // Function to generate path between two stations
-  const generatePath = (fromIdx: number, toIdx: number) => {
-    const from = stationPositions[fromIdx];
-    const to = stationPositions[toIdx];
-
-    if (!from || !to) return "";
-
-    // Calculate control points for curved path
-    const midAngle = (from.angle + to.angle) / 2;
-    const midRadian = midAngle * (Math.PI / 180);
-    const controlRadius = radius * 0.9; // Slightly smaller radius for control point
-    const cx = center + controlRadius * Math.cos(midRadian);
-    const cy = center + controlRadius * Math.sin(midRadian);
-
-    return `M ${from.x} ${from.y} Q ${cx} ${cy} ${to.x} ${to.y}`;
-  };
-
   return (
     <div className="space-y-4">
       <div className="w-full aspect-square max-w-[500px] mx-auto border border-gray-200 rounded-lg p-4">
@@ -87,35 +66,6 @@ export default function StationMap({
             strokeWidth="20"
             className="opacity-20"
           />
-
-          {/* Route paths */}
-          {selectedFrom && selectedTo && (() => {
-            const fromIdx = stations.findIndex(s => s.name === selectedFrom);
-            const toIdx = stations.findIndex(s => s.name === selectedTo);
-
-            if (fromIdx !== -1 && toIdx !== -1) {
-              // Get all station indices in the route
-              const routeIndices: number[] = [fromIdx];
-              let currentIdx = fromIdx;
-
-              while (currentIdx !== toIdx) {
-                currentIdx = (currentIdx + 1) % stations.length;
-                routeIndices.push(currentIdx);
-              }
-
-              return routeIndices.slice(0, -1).map((idx, i) => (
-                <path
-                  key={`route-${idx}`}
-                  d={generatePath(idx, routeIndices[i + 1])}
-                  fill="none"
-                  stroke="#22c55e"
-                  strokeWidth="4"
-                  className="opacity-70"
-                />
-              ));
-            }
-            return null;
-          })()}
 
           {/* Station dots and labels */}
           {stationPositions.map(({ station, x, y }) => {
