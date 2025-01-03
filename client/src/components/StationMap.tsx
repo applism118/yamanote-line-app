@@ -16,10 +16,17 @@ export default function StationMap({
   intermediateStations = [],
   onSelectStation 
 }: StationMapProps) {
-  console.log("StationMap rendering with props:", { stations, selectedFrom, selectedTo, intermediateStations });
-
   const radius = 180; // SVG circle radius
   const center = 250; // Center point of the SVG
+
+  // Calculate positions for all stations
+  const stationPositions = stations.map((station, idx) => {
+    const angle = (idx * 360) / stations.length;
+    const radian = (angle - 90) * (Math.PI / 180);
+    const x = center + radius * Math.cos(radian);
+    const y = center + radius * Math.sin(radian);
+    return { station, x, y, angle };
+  });
 
   // Special positioning adjustments for specific stations
   const stationAdjustments: Record<string, { dx?: number; dy?: number; anchor?: string }> = {
@@ -42,6 +49,27 @@ export default function StationMap({
     "大崎": { dx: 8, dy: 4 }
   };
 
+  // Function to find station position by name
+  const findStationPosition = (name: string) => 
+    stationPositions.find(pos => pos.station.name === name);
+
+  // Function to generate path between two stations
+  const generatePath = (fromIdx: number, toIdx: number) => {
+    const from = stationPositions[fromIdx];
+    const to = stationPositions[toIdx];
+
+    if (!from || !to) return "";
+
+    // Calculate control points for curved path
+    const midAngle = (from.angle + to.angle) / 2;
+    const midRadian = midAngle * (Math.PI / 180);
+    const controlRadius = radius * 0.9; // Slightly smaller radius for control point
+    const cx = center + controlRadius * Math.cos(midRadian);
+    const cy = center + controlRadius * Math.sin(midRadian);
+
+    return `M ${from.x} ${from.y} Q ${cx} ${cy} ${to.x} ${to.y}`;
+  };
+
   return (
     <div className="space-y-4">
       <div className="w-full aspect-square max-w-[500px] mx-auto border border-gray-200 rounded-lg p-4">
@@ -60,20 +88,44 @@ export default function StationMap({
             className="opacity-20"
           />
 
-          {/* Station dots and labels */}
-          {stations.map((station, idx) => {
-            const angle = (idx * 360) / stations.length;
-            const radian = (angle - 90) * (Math.PI / 180);
-            const x = center + radius * Math.cos(radian);
-            const y = center + radius * Math.sin(radian);
+          {/* Route paths */}
+          {selectedFrom && selectedTo && (() => {
+            const fromIdx = stations.findIndex(s => s.name === selectedFrom);
+            const toIdx = stations.findIndex(s => s.name === selectedTo);
 
+            if (fromIdx !== -1 && toIdx !== -1) {
+              // Get all station indices in the route
+              const routeIndices: number[] = [fromIdx];
+              let currentIdx = fromIdx;
+
+              while (currentIdx !== toIdx) {
+                currentIdx = (currentIdx + 1) % stations.length;
+                routeIndices.push(currentIdx);
+              }
+
+              return routeIndices.slice(0, -1).map((idx, i) => (
+                <path
+                  key={`route-${idx}`}
+                  d={generatePath(idx, routeIndices[i + 1])}
+                  fill="none"
+                  stroke="#22c55e"
+                  strokeWidth="4"
+                  className="opacity-70"
+                />
+              ));
+            }
+            return null;
+          })()}
+
+          {/* Station dots and labels */}
+          {stationPositions.map(({ station, x, y }) => {
             const isFrom = station.name === selectedFrom;
             const isTo = station.name === selectedTo;
             const isIntermediate = intermediateStations.includes(station.name);
 
             // Get special positioning adjustments for this station
             const adjustment = stationAdjustments[station.name] || {};
-            const baseOffset = 24; // Adjusted base offset for better spacing
+            const baseOffset = 24;
             const finalDx = adjustment.anchor === "middle" ? 0 : (adjustment.dx || 0) + (x > center ? baseOffset : -baseOffset);
             const finalDy = adjustment.dy || 0;
 
