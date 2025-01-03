@@ -16,6 +16,8 @@ export default function StationMap({
   intermediateStations = [],
   onSelectStation 
 }: StationMapProps) {
+  console.log("StationMap rendering with props:", { stations, selectedFrom, selectedTo, intermediateStations });
+
   const radius = 180; // SVG circle radius
   const center = 250; // Center point of the SVG
 
@@ -42,7 +44,7 @@ export default function StationMap({
 
   return (
     <div className="space-y-4">
-      <div className="w-full aspect-square max-w-[500px] mx-auto">
+      <div className="w-full aspect-square max-w-[500px] mx-auto border border-gray-200 rounded-lg p-4">
         <svg 
           viewBox="0 0 500 500" 
           className="w-full h-full"

@@ -14,7 +14,7 @@ export default function Home() {
   const [toStation, setToStation] = useState<string>("");
   const [startTime, setStartTime] = useState<Date>(new Date());
   const [direction, setDirection] = useState<Direction>("clockwise");
-  const [selectionMode, setSelectionMode] = useState<"text" | "map">("text");
+  const [selectionMode, setSelectionMode] = useState<"text" | "map">("map");
   const [selectionStep, setSelectionStep] = useState<"from" | "to">("from");
 
   const handleMapStationSelect = (stationName: string) => {
