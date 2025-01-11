@@ -28,6 +28,29 @@ export default function StationMap({
     return { station, x, y, angle };
   });
 
+  // Find the 5th station in the route
+  const getFifthStation = () => {
+    if (!selectedFrom || !selectedTo) return null;
+    const fromIdx = stations.findIndex(s => s.name === selectedFrom);
+    const toIdx = stations.findIndex(s => s.name === selectedTo);
+    if (fromIdx === -1 || toIdx === -1) return null;
+
+    let currentIdx = fromIdx;
+    let count = 0;
+    const routeStations = [];
+
+    while (currentIdx !== toIdx && count < stations.length) {
+      routeStations.push(stations[currentIdx].name);
+      currentIdx = (currentIdx + 1) % stations.length;
+      count++;
+    }
+    routeStations.push(stations[toIdx].name);
+
+    return routeStations.length >= 6 ? routeStations[5] : null;
+  };
+
+  const fifthStation = getFifthStation();
+
   // Special positioning adjustments for specific stations
   const stationAdjustments: Record<string, { dx?: number; dy?: number; anchor?: string }> = {
     "池袋": { dy: -20, anchor: "middle" },
@@ -72,6 +95,7 @@ export default function StationMap({
             const isFrom = station.name === selectedFrom;
             const isTo = station.name === selectedTo;
             const isIntermediate = intermediateStations.includes(station.name);
+            const isFifthStation = station.name === fifthStation;
 
             // Get special positioning adjustments for this station
             const adjustment = stationAdjustments[station.name] || {};
@@ -92,9 +116,11 @@ export default function StationMap({
                       ? "fill-blue-500 stroke-blue-500" 
                       : isTo
                         ? "fill-red-500 stroke-red-500"
-                        : isIntermediate
-                          ? "fill-green-700 stroke-green-700"
-                          : "fill-white stroke-gray-400 hover:fill-gray-100"
+                        : isFifthStation
+                          ? "fill-orange-500 stroke-orange-500"
+                          : isIntermediate
+                            ? "fill-green-700 stroke-green-700"
+                            : "fill-white stroke-gray-400 hover:fill-gray-100"
                   )}
                   strokeWidth="2"
                 />
@@ -110,7 +136,8 @@ export default function StationMap({
                     "text-[12px] cursor-pointer select-none",
                     isFrom && "fill-blue-500 font-medium",
                     isTo && "fill-red-500 font-medium",
-                    isIntermediate && "fill-green-700 font-medium"
+                    isFifthStation && "fill-orange-500 font-medium",
+                    isIntermediate && !isFifthStation && "fill-green-700 font-medium"
                   )}
                 >
                   {station.name}
@@ -131,6 +158,12 @@ export default function StationMap({
           <div className="w-3 h-3 rounded-full bg-red-500"></div>
           <span>到着駅: {selectedTo || "未選択"}</span>
         </div>
+        {fifthStation && (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+            <span>休憩駅（5駅目）: {fifthStation}</span>
+          </div>
+        )}
       </div>
     </div>
   );
