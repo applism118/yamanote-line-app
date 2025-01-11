@@ -59,7 +59,7 @@ export const calculateRoute = (
   startTime: Date,
   direction: Direction = "clockwise",
   restMinutes: number = 30
-): { stations: Array<{ name: string; arrivalTime: Date; isRestStation?: boolean }>, totalDistance: number } => {
+): { stations: Array<{ name: string; arrivalTime: Date; departureTime?: Date; isRestStation?: boolean }>, totalDistance: number } => {
   const fromIdx = stations.findIndex(s => s.name === fromStation);
   const toIdx = stations.findIndex(s => s.name === toStation);
 
@@ -67,12 +67,12 @@ export const calculateRoute = (
     throw new Error("Invalid stations");
   }
 
-  const route: Array<{ name: string; arrivalTime: Date; isRestStation?: boolean }> = [];
+  const route: Array<{ name: string; arrivalTime: Date; departureTime?: Date; isRestStation?: boolean }> = [];
   let currentTime = new Date(startTime);
   let totalDistance = 0;
 
   let currentIdx = fromIdx;
-  route.push({ name: stations[currentIdx].name, arrivalTime: new Date(currentTime) });
+  route.push({ name: stations[currentIdx].name, arrivalTime: new Date(currentTime), departureTime: new Date(currentTime) });
 
   let stationCount = 1;
   while (currentIdx !== toIdx) {
@@ -86,25 +86,29 @@ export const calculateRoute = (
       currentIdx = (currentIdx - 1 + stations.length) % stations.length;
     }
 
-    currentTime = new Date(currentTime.getTime() + timeMs);
-    totalDistance += distance;
+    // Calculate arrival time based on walking time from previous station
+    const arrivalTime = new Date(
+      (route[route.length - 1].departureTime || route[route.length - 1].arrivalTime).getTime() + timeMs
+    );
 
     // Every 5th station (but not the first or last station) is a rest station
     const isRestStation = stationCount % 5 === 0 && 
                          stationCount !== 0 && 
                          currentIdx !== toIdx;
 
-    if (isRestStation) {
-      // Add rest time to current time
-      currentTime = new Date(currentTime.getTime() + restMinutes * 60 * 1000);
-    }
+    // For rest stations, set departure time after rest
+    const departureTime = isRestStation
+      ? new Date(arrivalTime.getTime() + restMinutes * 60 * 1000)
+      : arrivalTime;
 
     route.push({
       name: stations[currentIdx].name,
-      arrivalTime: new Date(currentTime),
+      arrivalTime: arrivalTime,
+      departureTime: departureTime,
       isRestStation
     });
 
+    totalDistance += distance;
     stationCount++;
 
     if (route.length > stations.length && currentIdx !== toIdx) {

@@ -4,12 +4,21 @@ interface RouteTimelineProps {
   stations: Array<{
     name: string;
     arrivalTime: Date;
+    departureTime?: Date;
     isRestStation?: boolean;
   }>;
   restMinutes: number;
 }
 
 export default function RouteTimeline({ stations, restMinutes }: RouteTimelineProps) {
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('ja-JP', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
+
   return (
     <div className="relative">
       <div className="absolute left-3 sm:left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
@@ -32,19 +41,24 @@ export default function RouteTimeline({ stations, restMinutes }: RouteTimelinePr
               )}>
                 {station.name}
               </span>
-              <div className="text-right">
-                <span className="text-xs sm:text-sm text-gray-600 ml-2">
-                  {station.arrivalTime.toLocaleTimeString('ja-JP', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                  })}
-                </span>
-                {station.isRestStation && (
-                  <span className="text-xs sm:text-sm text-orange-600 ml-2">
-                    （{restMinutes}分休憩）
+              <div className="text-right space-y-1">
+                <div>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    到着: {formatTime(station.arrivalTime)}
                   </span>
-                )}
+                  {station.isRestStation && (
+                    <>
+                      <span className="text-xs sm:text-sm text-orange-600 ml-2">
+                        （{restMinutes}分休憩）
+                      </span>
+                      <div>
+                        <span className="text-xs sm:text-sm text-gray-600">
+                          出発: {formatTime(station.departureTime!)}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
