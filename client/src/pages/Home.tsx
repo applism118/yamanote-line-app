@@ -18,6 +18,7 @@ export default function Home() {
   const [selectionMode, setSelectionMode] = useState<"text" | "map">("map");
   const [selectionStep, setSelectionStep] = useState<"from" | "to">("from");
   const [restMinutes, setRestMinutes] = useState<number>(30);
+  const [selectedSpeed, setSelectedSpeed] = useState<string>(walkingSpeeds[0].name);
 
   const handleMapStationSelect = (stationName: string) => {
     if (selectionStep === "from") {
@@ -150,17 +151,21 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 order-2">
-            {fromStation && toStation && walkingSpeeds.map((speed) => (
-              <Card key={speed.name}>
-                <CardHeader>
-                  <CardTitle className="text-lg">{speed.label}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {(() => {
+          {fromStation && toStation && (
+            <Card className="order-2">
+              <CardContent className="pt-6">
+                <Tabs value={selectedSpeed} onValueChange={setSelectedSpeed}>
+                  <TabsList className="grid w-full grid-cols-3">
+                    {walkingSpeeds.map(speed => (
+                      <TabsTrigger key={speed.name} value={speed.name}>
+                        {speed.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  {walkingSpeeds.map(speed => {
                     const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction, restMinutes);
                     return (
-                      <>
+                      <TabsContent key={speed.name} value={speed.name}>
                         <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
                           <p className="text-sm sm:text-base text-gray-600">
                             総距離: {route.totalDistance.toFixed(1)} km
@@ -170,13 +175,13 @@ export default function Home() {
                           </p>
                         </div>
                         <RouteTimeline stations={route.stations} restMinutes={restMinutes} />
-                      </>
+                      </TabsContent>
                     );
-                  })()}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  })}
+                </Tabs>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
