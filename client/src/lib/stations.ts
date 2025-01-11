@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export interface Station {
   name: string;
   nextDistance: number;
@@ -55,8 +57,9 @@ export const calculateRoute = (
   toStation: string,
   speedKmh: number,
   startTime: Date,
-  direction: Direction = "clockwise"
-): { stations: Array<{ name: string; arrivalTime: Date }>, totalDistance: number } => {
+  direction: Direction = "clockwise",
+  restMinutes: number = 30
+): { stations: Array<{ name: string; arrivalTime: Date; isRestStation?: boolean }>, totalDistance: number } => {
   const fromIdx = stations.findIndex(s => s.name === fromStation);
   const toIdx = stations.findIndex(s => s.name === toStation);
 
@@ -64,13 +67,14 @@ export const calculateRoute = (
     throw new Error("Invalid stations");
   }
 
-  const route: Array<{ name: string; arrivalTime: Date }> = [];
+  const route: Array<{ name: string; arrivalTime: Date; isRestStation?: boolean }> = [];
   let currentTime = new Date(startTime);
   let totalDistance = 0;
 
   let currentIdx = fromIdx;
   route.push({ name: stations[currentIdx].name, arrivalTime: new Date(currentTime) });
 
+  let stationCount = 1;
   while (currentIdx !== toIdx) {
     const distance = stations[currentIdx].nextDistance;
     const timeHours = distance / speedKmh;
@@ -85,10 +89,23 @@ export const calculateRoute = (
     currentTime = new Date(currentTime.getTime() + timeMs);
     totalDistance += distance;
 
+    // Every 5th station (but not the first or last station) is a rest station
+    const isRestStation = stationCount % 5 === 0 && 
+                         stationCount !== 0 && 
+                         currentIdx !== toIdx;
+
+    if (isRestStation) {
+      // Add rest time to current time
+      currentTime = new Date(currentTime.getTime() + restMinutes * 60 * 1000);
+    }
+
     route.push({
       name: stations[currentIdx].name,
-      arrivalTime: new Date(currentTime)
+      arrivalTime: new Date(currentTime),
+      isRestStation
     });
+
+    stationCount++;
 
     if (route.length > stations.length && currentIdx !== toIdx) {
       throw new Error("Route calculation error");

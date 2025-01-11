@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import StationSelect from "../components/StationSelect";
 import StationMap from "../components/StationMap";
 import RouteTimeline from "../components/RouteTimeline";
@@ -16,6 +17,7 @@ export default function Home() {
   const [direction, setDirection] = useState<Direction>("clockwise");
   const [selectionMode, setSelectionMode] = useState<"text" | "map">("map");
   const [selectionStep, setSelectionStep] = useState<"from" | "to">("from");
+  const [restMinutes, setRestMinutes] = useState<number>(30);
 
   const handleMapStationSelect = (stationName: string) => {
     if (selectionStep === "from") {
@@ -30,7 +32,7 @@ export default function Home() {
   // Calculate intermediate stations for the selected route
   const getIntermediateStations = () => {
     if (!fromStation || !toStation) return [];
-    const route = calculateRoute(fromStation, toStation, walkingSpeeds[0].speedKmh, startTime, direction);
+    const route = calculateRoute(fromStation, toStation, walkingSpeeds[0].speedKmh, startTime, direction, restMinutes);
     return route.stations
       .slice(1, -1) // Exclude first (from) and last (to) stations
       .map(station => station.name);
@@ -110,7 +112,7 @@ export default function Home() {
                 </RadioGroup>
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label className="mb-1.5 block">出発時刻</Label>
                 <input
                   type="time"
@@ -132,6 +134,19 @@ export default function Home() {
                   )}
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="restMinutes">休憩時間（分）</Label>
+                <Input
+                  id="restMinutes"
+                  type="number"
+                  min="0"
+                  max="120"
+                  value={restMinutes}
+                  onChange={(e) => setRestMinutes(Math.max(0, parseInt(e.target.value) || 0))}
+                  className="w-full"
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -143,7 +158,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   {(() => {
-                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction);
+                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction, restMinutes);
                     return (
                       <>
                         <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
@@ -151,10 +166,10 @@ export default function Home() {
                             総距離: {route.totalDistance.toFixed(1)} km
                           </p>
                           <p className="text-sm sm:text-base text-gray-600">
-                            予想所要時間: {(route.totalDistance / speed.speedKmh).toFixed(1)} 時間
+                            予想所要時間: {(route.totalDistance / speed.speedKmh + (route.stations.filter(s => s.isRestStation).length * restMinutes / 60)).toFixed(1)} 時間
                           </p>
                         </div>
-                        <RouteTimeline stations={route.stations} />
+                        <RouteTimeline stations={route.stations} restMinutes={restMinutes} />
                       </>
                     );
                   })()}
