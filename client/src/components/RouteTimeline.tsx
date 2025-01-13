@@ -55,7 +55,7 @@ export default function RouteTimeline({ stations, restMinutes }: RouteTimelinePr
           {/* 最後の駅以外に縦線を表示 */}
           {idx < stations.length - 1 && (
             <div 
-              className="absolute left-3 sm:left-4 w-1 h-full"
+              className="absolute left-[11px] sm:left-[15px] w-1 h-[calc(100%-8px)] top-4"
               style={{ backgroundColor: getLineColor(getDistanceToNextStation(idx)) }}
             />
           )}
