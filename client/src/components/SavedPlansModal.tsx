@@ -52,11 +52,6 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
     });
   };
 
-  const handleSelectPlan = (plan: RoutePlan) => {
-    onSelectPlan(plan);
-    setOpen(false);
-  };
-
   const togglePlanExpansion = (planId: string) => {
     setExpandedPlanId(expandedPlanId === planId ? null : planId);
   };
@@ -84,8 +79,7 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
             )}
           </div>
           <DialogDescription className="text-left">
-            過去に保存したプランを確認できます。<br />
-            プランをクリックすると、そのプランを読み込みます。
+            過去に保存したプランを確認できます。
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-4 mt-4 overflow-y-auto">
@@ -145,15 +139,6 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                         stations={plan.stations}
                         restMinutes={plan.restMinutes}
                       />
-                      <div className="mt-4">
-                        <Button
-                          variant="default"
-                          onClick={() => handleSelectPlan(plan)}
-                          className="w-full"
-                        >
-                          このプランを読み込む
-                        </Button>
-                      </div>
                     </div>
                   )}
                 </div>

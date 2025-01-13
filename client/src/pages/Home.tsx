@@ -3,7 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Bookmark } from "lucide-react";
@@ -195,16 +201,20 @@ export default function Home() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="restMinutes">休憩時間（分）</Label>
-                <Input
-                  id="restMinutes"
-                  type="number"
-                  min="0"
-                  max="120"
-                  value={restMinutes}
-                  onChange={(e) => setRestMinutes(Math.max(0, parseInt(e.target.value) || 0))}
-                  className="w-full"
-                />
+                <Label htmlFor="restMinutes">休憩時間</Label>
+                <Select
+                  value={restMinutes.toString()}
+                  onValueChange={(value) => setRestMinutes(parseInt(value))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="休憩時間を選択" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="15">15分</SelectItem>
+                    <SelectItem value="30">30分</SelectItem>
+                    <SelectItem value="60">60分</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
