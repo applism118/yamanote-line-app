@@ -63,7 +63,7 @@ export default function RouteTimeline({ stations, restMinutes }: RouteTimelinePr
           <div className="relative pl-8 sm:pl-10 pb-6">
             <div className={cn(
               "absolute left-[10px] sm:left-[14px] w-2 h-2 rounded-full top-1.5",
-              idx === 0 ? "bg-green-500" :
+              idx === 0 ? "bg-blue-500" :
               idx === stations.length - 1 ? "bg-red-500" :
               station.isRestStation ? "bg-orange-500" :
               "bg-gray-400"
@@ -72,7 +72,9 @@ export default function RouteTimeline({ stations, restMinutes }: RouteTimelinePr
             <div className="flex justify-between items-start">
               <span className={cn(
                 "font-medium text-sm sm:text-base",
-                station.isRestStation && "text-orange-600"
+                idx === 0 && "text-blue-600",
+                idx === stations.length - 1 && "text-red-600",
+                station.isRestStation && !([0, stations.length - 1].includes(idx)) && "text-orange-600"
               )}>
                 {station.name}
               </span>
