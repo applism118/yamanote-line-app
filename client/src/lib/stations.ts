@@ -5,39 +5,6 @@ export interface Station {
   nextDistance: number;
 }
 
-export const stations: Station[] = [
-  { name: "池袋", nextDistance: 1.530 },
-  { name: "大塚", nextDistance: 2.295 },
-  { name: "巣鴨", nextDistance: 1.403 },
-  { name: "駒込", nextDistance: 0.893 },
-  { name: "田端", nextDistance: 2.040 },
-  { name: "西日暮里", nextDistance: 1.020 },
-  { name: "日暮里", nextDistance: 0.638 },
-  { name: "鶯谷", nextDistance: 1.403 },
-  { name: "上野", nextDistance: 1.403 },
-  { name: "御徒町", nextDistance: 0.765 },
-  { name: "秋葉原", nextDistance: 1.275 },
-  { name: "神田", nextDistance: 0.892 },
-  { name: "東京", nextDistance: 1.657 },
-  { name: "有楽町", nextDistance: 1.020 },
-  { name: "新橋", nextDistance: 1.403 },
-  { name: "浜松町", nextDistance: 1.530 },
-  { name: "田町", nextDistance: 1.913 },
-  { name: "高輪ゲートウェイ", nextDistance: 1.658 },
-  { name: "品川", nextDistance: 1.148 },
-  { name: "大崎", nextDistance: 2.550 },
-  { name: "五反田", nextDistance: 1.148 },
-  { name: "目黒", nextDistance: 1.530 },
-  { name: "恵比寿", nextDistance: 1.913 },
-  { name: "渋谷", nextDistance: 2.040 },
-  { name: "原宿", nextDistance: 1.530 },
-  { name: "代々木", nextDistance: 1.913 },
-  { name: "新宿", nextDistance: 0.892 },
-  { name: "新大久保", nextDistance: 1.658 },
-  { name: "高田馬場", nextDistance: 1.785 },
-  { name: "目白", nextDistance: 1.148 }
-];
-
 export interface WalkingSpeed {
   name: string;
   speedKmh: number;
@@ -45,9 +12,9 @@ export interface WalkingSpeed {
 }
 
 export const walkingSpeeds: WalkingSpeed[] = [
-  { name: "very_slow", speedKmh: 3, label: "だらだら歩く (3 km/h)" },
-  { name: "slow", speedKmh: 4, label: "ゆっくり歩く (4 km/h)" },
-  { name: "normal", speedKmh: 5, label: "普通に歩く (5 km/h)" }
+  { name: "very_slow", speedKmh: 3, label: "ゆっくり" },
+  { name: "slow", speedKmh: 4, label: "普通" },
+  { name: "normal", speedKmh: 5, label: "速い" }
 ];
 
 export type Direction = "clockwise" | "counterclockwise";
@@ -118,3 +85,36 @@ export const calculateRoute = (
 
   return { stations: route, totalDistance };
 };
+
+export const stations: Station[] = [
+  { name: "池袋", nextDistance: 1.530 },
+  { name: "大塚", nextDistance: 2.295 },
+  { name: "巣鴨", nextDistance: 1.403 },
+  { name: "駒込", nextDistance: 0.893 },
+  { name: "田端", nextDistance: 2.040 },
+  { name: "西日暮里", nextDistance: 1.020 },
+  { name: "日暮里", nextDistance: 0.638 },
+  { name: "鶯谷", nextDistance: 1.403 },
+  { name: "上野", nextDistance: 1.403 },
+  { name: "御徒町", nextDistance: 0.765 },
+  { name: "秋葉原", nextDistance: 1.275 },
+  { name: "神田", nextDistance: 0.892 },
+  { name: "東京", nextDistance: 1.657 },
+  { name: "有楽町", nextDistance: 1.020 },
+  { name: "新橋", nextDistance: 1.403 },
+  { name: "浜松町", nextDistance: 1.530 },
+  { name: "田町", nextDistance: 1.913 },
+  { name: "高輪ゲートウェイ", nextDistance: 1.658 },
+  { name: "品川", nextDistance: 1.148 },
+  { name: "大崎", nextDistance: 2.550 },
+  { name: "五反田", nextDistance: 1.148 },
+  { name: "目黒", nextDistance: 1.530 },
+  { name: "恵比寿", nextDistance: 1.913 },
+  { name: "渋谷", nextDistance: 2.040 },
+  { name: "原宿", nextDistance: 1.530 },
+  { name: "代々木", nextDistance: 1.913 },
+  { name: "新宿", nextDistance: 0.892 },
+  { name: "新大久保", nextDistance: 1.658 },
+  { name: "高田馬場", nextDistance: 1.785 },
+  { name: "目白", nextDistance: 1.148 }
+];

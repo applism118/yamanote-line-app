@@ -154,31 +154,61 @@ export default function Home() {
           {fromStation && toStation && (
             <Card className="order-2">
               <CardContent className="pt-6">
-                <Tabs value={selectedSpeed} onValueChange={setSelectedSpeed}>
-                  <TabsList className="grid w-full grid-cols-3">
-                    {walkingSpeeds.map(speed => (
-                      <TabsTrigger key={speed.name} value={speed.name}>
-                        {speed.label}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                  {walkingSpeeds.map(speed => {
-                    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction, restMinutes);
-                    return (
-                      <TabsContent key={speed.name} value={speed.name}>
-                        <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
-                          <p className="text-sm sm:text-base text-gray-600">
-                            総距離: {route.totalDistance.toFixed(1)} km
-                          </p>
-                          <p className="text-sm sm:text-base text-gray-600">
-                            予想所要時間: {(route.totalDistance / speed.speedKmh + (route.stations.filter(s => s.isRestStation).length * restMinutes / 60)).toFixed(1)} 時間
-                          </p>
-                        </div>
-                        <RouteTimeline stations={route.stations} restMinutes={restMinutes} />
-                      </TabsContent>
-                    );
-                  })}
-                </Tabs>
+                <div className="text-sm space-y-2 bg-gray-50 p-4 rounded-lg mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span>出発駅: {fromStation}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span>到着駅: {toStation}</span>
+                  </div>
+                  {intermediateStations.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                      <span>休憩駅（5駅ごと）: {intermediateStations.join(', ')}</span>
+                    </div>
+                  )}
+                </div>
+
+                <StationMap
+                  stations={stations}
+                  selectedFrom={fromStation}
+                  selectedTo={toStation}
+                  intermediateStations={intermediateStations}
+                  onSelectStation={handleMapStationSelect}
+                />
+
+                <div className="mt-6">
+                  <Tabs value={selectedSpeed} onValueChange={setSelectedSpeed}>
+                    <TabsList className="grid w-full grid-cols-3">
+                      {walkingSpeeds.map(speed => (
+                        <TabsTrigger key={speed.name} value={speed.name}>
+                          {speed.label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                    {walkingSpeeds.map(speed => {
+                      const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction, restMinutes);
+                      return (
+                        <TabsContent key={speed.name} value={speed.name}>
+                          <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
+                            <p className="text-sm sm:text-base text-gray-600">
+                              速度: {speed.speedKmh} km/h
+                            </p>
+                            <p className="text-sm sm:text-base text-gray-600">
+                              総距離: {route.totalDistance.toFixed(1)} km
+                            </p>
+                            <p className="text-sm sm:text-base text-gray-600">
+                              予想所要時間: {(route.totalDistance / speed.speedKmh + (route.stations.filter(s => s.isRestStation).length * restMinutes / 60)).toFixed(1)} 時間
+                            </p>
+                          </div>
+                          <RouteTimeline stations={route.stations} restMinutes={restMinutes} />
+                        </TabsContent>
+                      );
+                    })}
+                  </Tabs>
+                </div>
               </CardContent>
             </Card>
           )}
