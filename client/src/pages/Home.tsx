@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { FileText } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import StationSelect from "../components/StationSelect";
 import StationMap from "../components/StationMap";
 import RouteTimeline from "../components/RouteTimeline";
@@ -69,12 +69,14 @@ export default function Home() {
       toast({
         title: "プランを保存しました",
         description: "保存したプランは「保存したプランを見る」から確認できます。",
+        duration: 2000,
       });
     } catch (error) {
       toast({
         title: "エラー",
         description: "プランの保存に失敗しました。",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 2000,
       });
     }
   };
@@ -90,6 +92,7 @@ export default function Home() {
     toast({
       title: "プランを読み込みました",
       description: "保存されたプランの設定を反映しました。",
+      duration: 2000,
     });
   };
 
@@ -240,7 +243,7 @@ export default function Home() {
                             className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
                           >
                             プランを保存
-                            <FileText className="h-4 w-4" />
+                            <Bookmark className="h-4 w-4" />
                           </Button>
                         </div>
                       </TabsContent>
