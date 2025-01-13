@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Trash2, ChevronDown } from "lucide-react";
+import { Trash2, ChevronDown, FileText } from "lucide-react";
 import { useState } from "react";
 import { type RoutePlan, getStoredPlans, deletePlan, deleteAllPlans } from "../lib/storage";
 import RouteTimeline from "./RouteTimeline";
@@ -62,7 +62,9 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">保存したプランを表示</Button>
+        <Button variant="outline" size="icon" title="保存したプランを表示">
+          <FileText className="h-4 w-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl h-[80vh]">
         <DialogHeader>
@@ -79,8 +81,9 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
               </Button>
             )}
           </div>
-          <DialogDescription>
-            過去に保存したプランを確認できます。プランをクリックすると、そのプランを読み込みます。
+          <DialogDescription className="text-left">
+            過去に保存したプランを確認できます。<br />
+            プランをクリックすると、そのプランを読み込みます。
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-full pr-4">
@@ -95,56 +98,48 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                   key={plan.id}
                   className="border rounded-lg p-4 hover:bg-accent/50 cursor-pointer group relative"
                 >
-                  <div className="absolute right-2 top-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => handleDeletePlan(plan.id, e)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
                   <div
                     className="space-y-2"
                     onClick={() => togglePlanExpansion(plan.id)}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-2">
                       <p className="text-sm text-muted-foreground">
                         作成日: {plan.createdAt.toLocaleString()}
                       </p>
-                      <ChevronDown
-                        className={cn(
-                          "h-4 w-4 transition-transform",
-                          expandedPlanId === plan.id && "transform rotate-180"
-                        )}
-                      />
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => handleDeletePlan(plan.id, e)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            expandedPlanId === plan.id && "transform rotate-180"
+                          )}
+                        />
+                      </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-medium">出発駅</p>
-                        <p>{plan.fromStation}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">到着駅</p>
-                        <p>{plan.toStation}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">速さ</p>
-                        <p>{
-                          plan.walkingSpeed === "slow" ? "ゆっくり" :
-                          plan.walkingSpeed === "normal" ? "普通" :
-                          "速い"
-                        }</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">総距離</p>
-                        <p>{plan.totalDistance.toFixed(1)} km</p>
-                      </div>
+                    <div className="flex items-center gap-4">
+                      <span><strong>出発:</strong> {plan.fromStation}</span>
+                      <span><strong>到着:</strong> {plan.toStation}</span>
+                      <span><strong>速さ:</strong> {
+                        plan.walkingSpeed === "slow" ? "ゆっくり" :
+                        plan.walkingSpeed === "normal" ? "普通" :
+                        "速い"
+                      }</span>
                     </div>
                   </div>
                   {expandedPlanId === plan.id && (
                     <div className="mt-4 pt-4 border-t">
+                      <div className="mb-4">
+                        <p className="text-sm text-gray-600">
+                          総距離: {plan.totalDistance.toFixed(1)} km
+                        </p>
+                      </div>
                       <RouteTimeline
                         stations={plan.stations}
                         restMinutes={plan.restMinutes}
