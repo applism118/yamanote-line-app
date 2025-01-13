@@ -106,15 +106,17 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                     onClick={() => togglePlanExpansion(plan.id)}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-2 text-sm">
                         <span>
-                          <span className="font-medium">出発:</span> {plan.fromStation} / {formatTime(plan.startTime)}
+                          {plan.fromStation} ({formatTime(plan.startTime)})
                         </span>
+                        <span className="text-gray-500">→</span>
                         <span>
-                          <span className="font-medium">到着:</span> {plan.toStation} / {formatTime(plan.stations[plan.stations.length - 1].arrivalTime)}
+                          {plan.toStation} ({formatTime(plan.stations[plan.stations.length - 1].arrivalTime)})
                         </span>
+                        <span className="text-gray-500">/</span>
                         <span>
-                          <span className="font-medium">速さ:</span> {
+                          速さ: {
                             plan.walkingSpeed === "slow" ? "ゆっくり" :
                             plan.walkingSpeed === "normal" ? "普通" :
                             "速い"
