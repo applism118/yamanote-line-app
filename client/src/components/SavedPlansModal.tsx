@@ -79,17 +79,17 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                   size="sm"
                   onClick={handleDeleteAllPlans}
                 >
-                  保存プランを全て削除
+                  全て削除
                 </Button>
               )}
             </div>
           </div>
-          <DialogDescription className="text-left">
+          <DialogDescription>
             過去に保存したプランを確認できます。<br />
             プランをクリックすると、そのプランを読み込みます。
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[calc(100%-6rem)] pr-4 mt-4">
+        <ScrollArea className="flex-1 pr-4 mt-4 overflow-y-auto">
           <div className="space-y-4">
             {plans.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">
