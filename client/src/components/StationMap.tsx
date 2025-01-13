@@ -65,14 +65,15 @@ export default function StationMap({
     "田町": { dy: 30, anchor: "middle" },  
     "新橋": { dy: 30, anchor: "middle" },  
     "有楽町": { dy: 30, anchor: "middle" },  
-    "品川": { dy: 30, anchor: "middle" },  
+    "品川": { dy: -15, anchor: "middle" },  // 位置を上に調整
     "東京": { dy: 30, anchor: "middle" },  
-    "神田": { dy: 30, anchor: "middle" },  
+    "神田": { dy: -15, anchor: "middle" },  // 位置を上に調整
     "新宿": { dx: -8 },
     "渋谷": { dx: -8 },
-    "高田馬場": { dy: -6 },
+    "高田馬場": { dy: -20 }, // 位置を上に調整
     "新大久保": { dy: 6 },
-    "大崎": { dx: 8, dy: 4 }
+    "大崎": { dx: 8, dy: 4 },
+    "駒込": { dy: -15 } // 位置を上に調整
   };
 
   return (
