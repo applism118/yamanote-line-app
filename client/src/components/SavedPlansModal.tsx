@@ -114,7 +114,7 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                         <span>
                           {plan.toStation} ({formatTime(plan.stations[plan.stations.length - 1].arrivalTime)})
                         </span>
-                        <span className="text-gray-500">/</span>
+                        <span className="text-gray-500"> </span>
                         <span>
                           速さ: {
                             plan.walkingSpeed === "slow" ? "ゆっくり" :
