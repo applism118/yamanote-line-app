@@ -69,14 +69,14 @@ export default function StationMap({
     "田町": { dy: 30, anchor: "middle" },
     "新橋": { dy: 30, anchor: "middle" },
     "有楽町": { dy: 30, anchor: "middle" },
-    "品川": { dy: 15, dx: 0, anchor: "middle" },  // アイコンの真下に配置
+    "品川": { dy: 25, dx: 0, anchor: "middle" },  // 緑のラインより下に配置
     "東京": { dy: 30, anchor: "middle" },
-    "神田": { dy: 15, dx: 0, anchor: "middle" },  // アイコンの真下に配置
+    "神田": { dy: 25, dx: 0, anchor: "middle" },  // 緑のラインより下に配置
     "新宿": { dx: -8 },
     "渋谷": { dx: -8 },
     "高田馬場": { dy: -20 },
-    "新大久保": { dy: -15 },  // 上部に移動
-    "大崎": { dx: 8, dy: 30 },  // 緑のエリアと被らないように下方向に調整
+    "新大久保": { dy: -15 },
+    "大崎": { dx: 8, dy: 30 },
     "駒込": { dy: -15 }
   };
 
