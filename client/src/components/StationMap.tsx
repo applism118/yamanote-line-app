@@ -28,6 +28,29 @@ export default function StationMap({
     return { station, x, y, angle };
   });
 
+  // Calculate min and max distances for color scaling
+  const distances = stations.map(s => s.nextDistance);
+  const minDistance = Math.min(...distances);
+  const maxDistance = Math.max(...distances);
+
+  // Function to calculate color intensity based on distance
+  const getPathColor = (distance: number) => {
+    const normalizedDistance = (distance - minDistance) / (maxDistance - minDistance);
+    const baseOpacity = 0.2; // minimum opacity
+    const opacity = baseOpacity + (normalizedDistance * 0.8); // scale from baseOpacity to 1
+    return `rgba(34, 197, 94, ${opacity})`; // rgb(22, 163, 74) is green-600
+  };
+
+  // Generate path segments between stations
+  const pathSegments = stationPositions.map((pos, idx) => {
+    const nextIdx = (idx + 1) % stationPositions.length;
+    const nextPos = stationPositions[nextIdx];
+    const distance = stations[idx].nextDistance;
+
+    const path = `M ${pos.x} ${pos.y} A ${radius} ${radius} 0 0 1 ${nextPos.x} ${nextPos.y}`;
+    return { path, distance };
+  });
+
   // Truncate station name if longer than 4 characters
   const truncateStationName = (name: string) => {
     return name.length > 4 ? `${name.slice(0, 4)}…` : name;
@@ -89,16 +112,16 @@ export default function StationMap({
           viewBox="0 0 500 500"
           className="w-full h-full"
         >
-          {/* Circle track */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            fill="none"
-            stroke="#22c55e"
-            strokeWidth="20"
-            className="opacity-20"
-          />
+          {/* Path segments with distance-based colors */}
+          {pathSegments.map((segment, idx) => (
+            <path
+              key={idx}
+              d={segment.path}
+              fill="none"
+              stroke={getPathColor(segment.distance)}
+              strokeWidth="20"
+            />
+          ))}
 
           {/* Station dots and labels */}
           {stationPositions.map(({ station, x, y }) => {
@@ -174,6 +197,17 @@ export default function StationMap({
             <span>休憩駅（5駅ごと）: {restStations.join(', ')}</span>
           </div>
         )}
+
+        {/* 距離の凡例を追加 */}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <p className="text-sm text-gray-600 mb-2">駅間距離の凡例:</p>
+          <div className="flex items-center gap-2">
+            <div className="w-20 h-3 bg-gradient-to-r from-green-600/20 to-green-600"></div>
+            <span className="text-xs text-gray-500">
+              {minDistance.toFixed(1)}km → {maxDistance.toFixed(1)}km
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
