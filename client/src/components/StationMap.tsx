@@ -36,8 +36,10 @@ export default function StationMap({
   // Function to calculate color intensity based on distance
   const getPathColor = (distance: number) => {
     const normalizedDistance = (distance - minDistance) / (maxDistance - minDistance);
-    const baseOpacity = 0.15; // minimum opacity を下げてコントラストを強調
-    const opacity = baseOpacity + (normalizedDistance * 0.85); // scale from baseOpacity to 1
+    // より強いコントラストのために指数関数を使用
+    const enhancedDistance = Math.pow(normalizedDistance, 1.5);
+    const baseOpacity = 0.1; // minimum opacity をさらに下げる
+    const opacity = baseOpacity + (enhancedDistance * 0.9); // scale from baseOpacity to 1
     return `rgba(34, 197, 94, ${opacity})`; // rgb(22, 163, 74) is green-600
   };
 

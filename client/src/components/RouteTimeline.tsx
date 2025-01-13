@@ -41,8 +41,10 @@ export default function RouteTimeline({ stations, restMinutes }: RouteTimelinePr
   const getLineColor = (distance: number) => {
     if (distance === 0) return "bg-gray-200";
     const normalizedDistance = (distance - minDistance) / (maxDistance - minDistance);
-    const baseOpacity = 0.15;
-    const opacity = baseOpacity + (normalizedDistance * 0.85);
+    // より強いコントラストのために指数関数を使用
+    const enhancedDistance = Math.pow(normalizedDistance, 1.5);
+    const baseOpacity = 0.1;
+    const opacity = baseOpacity + (enhancedDistance * 0.9);
     return `rgb(34 197 94 / ${opacity})`;
   };
 
