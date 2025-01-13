@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -10,19 +10,6 @@ import RouteTimeline from "../components/RouteTimeline";
 import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/stations";
 import { cn } from "@/lib/utils";
 
-// ローカルストレージのキー
-const STORAGE_KEY = "yamanote_planner_state";
-
-// 保存する状態の型定義
-interface SavedState {
-  fromStation: string;
-  toStation: string;
-  direction: Direction;
-  startTime: string;
-  restMinutes: number;
-  selectedSpeed: string;
-}
-
 export default function Home() {
   const [fromStation, setFromStation] = useState<string>("");
   const [toStation, setToStation] = useState<string>("");
@@ -32,33 +19,6 @@ export default function Home() {
   const [selectionStep, setSelectionStep] = useState<"from" | "to">("from");
   const [restMinutes, setRestMinutes] = useState<number>(30);
   const [selectedSpeed, setSelectedSpeed] = useState<string>(walkingSpeeds[0].name);
-
-  // ローカルストレージから状態を読み込む
-  useEffect(() => {
-    const savedState = localStorage.getItem(STORAGE_KEY);
-    if (savedState) {
-      const state = JSON.parse(savedState) as SavedState;
-      setFromStation(state.fromStation);
-      setToStation(state.toStation);
-      setDirection(state.direction);
-      setStartTime(new Date(state.startTime));
-      setRestMinutes(state.restMinutes);
-      setSelectedSpeed(state.selectedSpeed);
-    }
-  }, []);
-
-  // 状態が変更されたらローカルストレージに保存
-  useEffect(() => {
-    const state: SavedState = {
-      fromStation,
-      toStation,
-      direction,
-      startTime: startTime.toISOString(),
-      restMinutes,
-      selectedSpeed
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [fromStation, toStation, direction, startTime, restMinutes, selectedSpeed]);
 
   const handleMapStationSelect = (stationName: string) => {
     if (selectionStep === "from") {
