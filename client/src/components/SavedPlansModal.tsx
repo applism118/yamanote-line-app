@@ -77,6 +77,7 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                 variant="destructive"
                 size="sm"
                 onClick={handleDeleteAllPlans}
+                className="mr-8"
               >
                 全て削除
               </Button>
