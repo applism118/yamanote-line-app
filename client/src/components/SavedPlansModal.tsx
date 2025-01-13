@@ -71,20 +71,18 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
       <DialogContent className="max-w-2xl h-[80vh]">
         <DialogHeader>
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <DialogTitle>保存したプラン一覧</DialogTitle>
-              {plans.length > 0 && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={handleDeleteAllPlans}
-                >
-                  全て削除
-                </Button>
-              )}
-            </div>
+            <DialogTitle>保存したプラン一覧</DialogTitle>
+            {plans.length > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteAllPlans}
+              >
+                全て削除
+              </Button>
+            )}
           </div>
-          <DialogDescription>
+          <DialogDescription className="text-left">
             過去に保存したプランを確認できます。<br />
             プランをクリックすると、そのプランを読み込みます。
           </DialogDescription>
@@ -114,7 +112,6 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                           variant="ghost"
                           size="icon"
                           onClick={(e) => handleDeletePlan(plan.id, e)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
