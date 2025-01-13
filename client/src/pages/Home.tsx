@@ -56,8 +56,8 @@ export default function Home() {
             <CardContent className="space-y-4 sm:space-y-6">
               <Tabs value={selectionMode} onValueChange={(v) => setSelectionMode(v as "text" | "map")}>
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="text">キーワードで指定</TabsTrigger>
                   <TabsTrigger value="map">地図で指定</TabsTrigger>
+                  <TabsTrigger value="text">キーワードで指定</TabsTrigger>
                 </TabsList>
                 <TabsContent value="text" className="space-y-4">
                   <div>
