@@ -18,7 +18,7 @@ export default function Home() {
   const [selectionMode, setSelectionMode] = useState<"text" | "map">("map");
   const [selectionStep, setSelectionStep] = useState<"from" | "to">("from");
   const [restMinutes, setRestMinutes] = useState<number>(30);
-  const [selectedSpeed, setSelectedSpeed] = useState<string>(walkingSpeeds[0].name);
+  const [selectedSpeed, setSelectedSpeed] = useState<string>("slow"); // Changed from walkingSpeeds[0].name
 
   const handleMapStationSelect = (stationName: string) => {
     if (selectionStep === "from") {
