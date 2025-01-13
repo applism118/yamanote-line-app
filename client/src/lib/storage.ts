@@ -28,7 +28,7 @@ export function getStoredPlans(): RoutePlan[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return [];
-    
+
     const parsed = JSON.parse(stored, (key, value) => {
       // Date型の文字列を Date オブジェクトに変換
       if (key === 'createdAt' || key === 'startTime' || key === 'arrivalTime' || key === 'departureTime') {
@@ -36,7 +36,7 @@ export function getStoredPlans(): RoutePlan[] {
       }
       return value;
     });
-    
+
     return routePlanSchema.array().parse(parsed);
   } catch (error) {
     console.error('Failed to load stored plans:', error);
@@ -47,15 +47,15 @@ export function getStoredPlans(): RoutePlan[] {
 // 新しいプランを保存
 export function storePlan(plan: Omit<RoutePlan, 'id' | 'createdAt'>): RoutePlan {
   const plans = getStoredPlans();
-  
+
   const newPlan: RoutePlan = {
     ...plan,
     id: crypto.randomUUID(),
     createdAt: new Date()
   };
-  
+
   plans.push(newPlan);
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
     return newPlan;
@@ -70,4 +70,9 @@ export function deletePlan(planId: string): void {
   const plans = getStoredPlans();
   const filteredPlans = plans.filter(plan => plan.id !== planId);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredPlans));
+}
+
+// 全てのプランを削除
+export function deleteAllPlans(): void {
+  localStorage.removeItem(STORAGE_KEY);
 }

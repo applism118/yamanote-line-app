@@ -232,7 +232,11 @@ export default function Home() {
                         </div>
                         <RouteTimeline stations={route.stations} restMinutes={restMinutes} />
                         <div className="mt-4 flex justify-end">
-                          <Button onClick={handleSavePlan}>
+                          <Button
+                            onClick={handleSavePlan}
+                            variant="default"
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
                             プランを保存
                           </Button>
                         </div>
