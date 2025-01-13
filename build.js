@@ -34,7 +34,6 @@ async function buildServer() {
 
 async function buildClient() {
   try {
-    // Build client using Vite (output will go to dist/)
     await execAsync('npm run build');
     console.log('Client build completed');
   } catch (error) {
