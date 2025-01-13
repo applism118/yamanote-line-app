@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { FileText } from "lucide-react";
 import StationSelect from "../components/StationSelect";
 import StationMap from "../components/StationMap";
 import RouteTimeline from "../components/RouteTimeline";
@@ -13,6 +14,7 @@ import SavedPlansModal from "../components/SavedPlansModal";
 import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/stations";
 import { type RoutePlan, storePlan } from "../lib/storage";
 import { cn } from "@/lib/utils";
+
 
 export default function Home() {
   const [fromStation, setFromStation] = useState<string>("");
@@ -103,7 +105,7 @@ export default function Home() {
         <div className="space-y-4 sm:space-y-6 md:space-y-8">
           <Card className="order-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle>ルート設定</CardTitle>
+              <CardTitle>プランを作成</CardTitle>
               <SavedPlansModal onSelectPlan={handleLoadPlan} />
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6">
@@ -235,9 +237,10 @@ export default function Home() {
                           <Button
                             onClick={handleSavePlan}
                             variant="default"
-                            className="bg-blue-600 hover:bg-blue-700"
+                            className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
                           >
                             プランを保存
+                            <FileText className="h-4 w-4" />
                           </Button>
                         </div>
                       </TabsContent>
