@@ -9,12 +9,12 @@ interface StationMapProps {
   onSelectStation: (stationName: string) => void;
 }
 
-export default function StationMap({ 
-  stations, 
+export default function StationMap({
+  stations,
   selectedFrom,
   selectedTo,
   intermediateStations = [],
-  onSelectStation 
+  onSelectStation
 }: StationMapProps) {
   const radius = 180; // SVG circle radius
   const center = 250; // Center point of the SVG
@@ -28,9 +28,9 @@ export default function StationMap({
     return { station, x, y, angle };
   });
 
-  // Truncate station name if longer than 3 characters
+  // Truncate station name if longer than 4 characters
   const truncateStationName = (name: string) => {
-    return name.length > 3 ? `${name.slice(0, 3)}…` : name;
+    return name.length > 4 ? `${name.slice(0, 4)}…` : name;
   };
 
   // Find rest stations (every 5th station) in the route
@@ -64,27 +64,27 @@ export default function StationMap({
     "大塚": { dy: -20, anchor: "middle" },
     "巣鴨": { dy: -20, anchor: "middle" },
     "目白": { dy: -20, anchor: "middle" },
-    "浜松町": { dy: 30, anchor: "middle" },  
-    "高輪ゲートウェイ": { dy: 30, anchor: "middle" },  
-    "田町": { dy: 30, anchor: "middle" },  
-    "新橋": { dy: 30, anchor: "middle" },  
-    "有楽町": { dy: 30, anchor: "middle" },  
-    "品川": { dy: -15, dx: 35, anchor: "start" },  // 円の外側に表示
-    "東京": { dy: 30, anchor: "middle" },  
-    "神田": { dy: -15, dx: -35, anchor: "end" },  // 円の外側に表示
+    "浜松町": { dy: 30, anchor: "middle" },
+    "高輪ゲートウェイ": { dy: 30, anchor: "middle" },
+    "田町": { dy: 30, anchor: "middle" },
+    "新橋": { dy: 30, anchor: "middle" },
+    "有楽町": { dy: 30, anchor: "middle" },
+    "品川": { dy: -15, dx: 50, anchor: "start" },  // 円の外側に表示 dx値増加
+    "東京": { dy: 30, anchor: "middle" },
+    "神田": { dy: -15, dx: -50, anchor: "end" },  // 円の外側に表示 dx値増加
     "新宿": { dx: -8 },
     "渋谷": { dx: -8 },
     "高田馬場": { dy: -20 },
     "新大久保": { dy: 6 },
-    "大崎": { dx: 8, dy: 4 },
+    "大崎": { dx: 8, dy: 20 },  // 下方向に調整 dy値増加
     "駒込": { dy: -15 }
   };
 
   return (
     <div className="space-y-4">
       <div className="w-full aspect-square max-w-[500px] mx-auto border border-gray-200 rounded-lg p-4">
-        <svg 
-          viewBox="0 0 500 500" 
+        <svg
+          viewBox="0 0 500 500"
           className="w-full h-full"
         >
           {/* Circle track */}
@@ -120,8 +120,8 @@ export default function StationMap({
                   r="6"
                   className={cn(
                     "cursor-pointer transition-colors",
-                    isFrom 
-                      ? "fill-blue-500 stroke-blue-500" 
+                    isFrom
+                      ? "fill-blue-500 stroke-blue-500"
                       : isTo
                         ? "fill-red-500 stroke-red-500"
                         : isRestStation
