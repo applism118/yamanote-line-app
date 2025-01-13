@@ -25,7 +25,6 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // モーダルを開く時にプランを読み込む
   const handleOpen = (open: boolean) => {
     if (open) {
       setPlans(getStoredPlans());
@@ -54,6 +53,15 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
 
   const togglePlanExpansion = (planId: string) => {
     setExpandedPlanId(expandedPlanId === planId ? null : planId);
+  };
+
+  // 時刻のフォーマット
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('ja-JP', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
   };
 
   return (
@@ -118,14 +126,23 @@ export default function SavedPlansModal({ onSelectPlan }: SavedPlansModalProps) 
                         />
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span><strong>出発:</strong> {plan.fromStation}</span>
-                      <span><strong>到着:</strong> {plan.toStation}</span>
-                      <span><strong>速さ:</strong> {
-                        plan.walkingSpeed === "slow" ? "ゆっくり" :
-                        plan.walkingSpeed === "normal" ? "普通" :
-                        "速い"
-                      }</span>
+                    <div className="grid gap-2 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">出発:</span>
+                        <span>{plan.fromStation} / {formatTime(plan.startTime)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">到着:</span>
+                        <span>{plan.toStation} / {formatTime(plan.stations[plan.stations.length - 1].arrivalTime)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">速さ:</span>
+                        <span>{
+                          plan.walkingSpeed === "slow" ? "ゆっくり" :
+                          plan.walkingSpeed === "normal" ? "普通" :
+                          "速い"
+                        }</span>
+                      </div>
                     </div>
                   </div>
                   {expandedPlanId === plan.id && (
