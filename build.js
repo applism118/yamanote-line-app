@@ -1,6 +1,7 @@
 import { build } from 'esbuild';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import path from 'path';
 
 const execAsync = promisify(exec);
 
@@ -11,7 +12,7 @@ async function buildServer() {
       bundle: true,
       platform: 'node',
       target: 'node18',
-      outdir: 'dist/server',
+      outdir: 'dist',
       format: 'esm',
       sourcemap: true,
       external: [
@@ -33,6 +34,7 @@ async function buildServer() {
 
 async function buildClient() {
   try {
+    // Build client using Vite (output will go to dist/)
     await execAsync('npm run build');
     console.log('Client build completed');
   } catch (error) {
