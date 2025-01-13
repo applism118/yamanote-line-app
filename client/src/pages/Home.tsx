@@ -4,10 +4,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import StationSelect from "../components/StationSelect";
 import StationMap from "../components/StationMap";
 import RouteTimeline from "../components/RouteTimeline";
+import SavedPlansModal from "../components/SavedPlansModal";
 import { stations, walkingSpeeds, calculateRoute, type Direction } from "../lib/stations";
+import { type RoutePlan, storePlan } from "../lib/storage";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -15,10 +19,11 @@ export default function Home() {
   const [toStation, setToStation] = useState<string>("");
   const [startTime, setStartTime] = useState<Date>(new Date());
   const [direction, setDirection] = useState<Direction>("clockwise");
-  const [selectionMode, setSelectionMode] = useState<"text" | "map">("map");
+  const [selectionMode, setSelectionMode] = useState<"map" | "text">("map");
   const [selectionStep, setSelectionStep] = useState<"from" | "to">("from");
   const [restMinutes, setRestMinutes] = useState<number>(30);
-  const [selectedSpeed, setSelectedSpeed] = useState<string>("slow"); // Changed from walkingSpeeds[0].name
+  const [selectedSpeed, setSelectedSpeed] = useState<string>("slow");
+  const { toast } = useToast();
 
   const handleMapStationSelect = (stationName: string) => {
     if (selectionStep === "from") {
@@ -35,8 +40,55 @@ export default function Home() {
     if (!fromStation || !toStation) return [];
     const route = calculateRoute(fromStation, toStation, walkingSpeeds[0].speedKmh, startTime, direction, restMinutes);
     return route.stations
-      .slice(1, -1) // Exclude first (from) and last (to) stations
+      .slice(1, -1)
       .map(station => station.name);
+  };
+
+  const handleSavePlan = () => {
+    if (!fromStation || !toStation) return;
+
+    const speed = walkingSpeeds.find(s => s.name === selectedSpeed);
+    if (!speed) return;
+
+    const route = calculateRoute(fromStation, toStation, speed.speedKmh, startTime, direction, restMinutes);
+
+    try {
+      storePlan({
+        fromStation,
+        toStation,
+        direction,
+        walkingSpeed: selectedSpeed,
+        startTime,
+        restMinutes,
+        stations: route.stations,
+        totalDistance: route.totalDistance
+      });
+
+      toast({
+        title: "プランを保存しました",
+        description: "保存したプランは「保存したプランを見る」から確認できます。",
+      });
+    } catch (error) {
+      toast({
+        title: "エラー",
+        description: "プランの保存に失敗しました。",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleLoadPlan = (plan: RoutePlan) => {
+    setFromStation(plan.fromStation);
+    setToStation(plan.toStation);
+    setDirection(plan.direction);
+    setSelectedSpeed(plan.walkingSpeed);
+    setStartTime(plan.startTime);
+    setRestMinutes(plan.restMinutes);
+
+    toast({
+      title: "プランを読み込みました",
+      description: "保存されたプランの設定を反映しました。",
+    });
   };
 
   const intermediateStations = getIntermediateStations();
@@ -50,15 +102,30 @@ export default function Home() {
 
         <div className="space-y-4 sm:space-y-6 md:space-y-8">
           <Card className="order-1">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle>ルート設定</CardTitle>
+              <SavedPlansModal onSelectPlan={handleLoadPlan} />
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6">
-              <Tabs value={selectionMode} onValueChange={(v) => setSelectionMode(v as "text" | "map")}>
+              <Tabs value={selectionMode} onValueChange={(v) => setSelectionMode(v as "map" | "text")}>
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="map">地図で指定</TabsTrigger>
                   <TabsTrigger value="text">キーワードで指定</TabsTrigger>
                 </TabsList>
+                <TabsContent value="map">
+                  <div className="space-y-4">
+                    <div className="text-center text-sm text-gray-600">
+                      {selectionStep === "from" ? "出発駅を選択してください" : "到着駅を選択してください"}
+                    </div>
+                    <StationMap
+                      stations={stations}
+                      selectedFrom={fromStation}
+                      selectedTo={toStation}
+                      intermediateStations={intermediateStations}
+                      onSelectStation={handleMapStationSelect}
+                    />
+                  </div>
+                </TabsContent>
                 <TabsContent value="text" className="space-y-4">
                   <div>
                     <Label className="mb-1.5 block">出発駅</Label>
@@ -72,20 +139,6 @@ export default function Home() {
                     <StationSelect
                       value={toStation}
                       onChange={setToStation}
-                    />
-                  </div>
-                </TabsContent>
-                <TabsContent value="map">
-                  <div className="space-y-4">
-                    <div className="text-center text-sm text-gray-600">
-                      {selectionStep === "from" ? "出発駅を選択してください" : "到着駅を選択してください"}
-                    </div>
-                    <StationMap
-                      stations={stations}
-                      selectedFrom={fromStation}
-                      selectedTo={toStation}
-                      intermediateStations={intermediateStations}
-                      onSelectStation={handleMapStationSelect}
                     />
                   </div>
                 </TabsContent>
@@ -178,6 +231,11 @@ export default function Home() {
                           </p>
                         </div>
                         <RouteTimeline stations={route.stations} restMinutes={restMinutes} />
+                        <div className="mt-4 flex justify-end">
+                          <Button onClick={handleSavePlan}>
+                            プランを保存
+                          </Button>
+                        </div>
                       </TabsContent>
                     );
                   })}
