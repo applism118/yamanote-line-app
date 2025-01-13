@@ -168,6 +168,9 @@ export default function Home() {
                       <TabsContent key={speed.name} value={speed.name}>
                         <div className="mb-4 p-3 bg-gray-50 rounded-md space-y-1">
                           <p className="text-sm sm:text-base text-gray-600">
+                            歩行速度: {speed.speedKmh} km/h
+                          </p>
+                          <p className="text-sm sm:text-base text-gray-600">
                             総距離: {route.totalDistance.toFixed(1)} km
                           </p>
                           <p className="text-sm sm:text-base text-gray-600">

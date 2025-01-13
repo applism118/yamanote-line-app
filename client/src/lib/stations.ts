@@ -45,9 +45,9 @@ export interface WalkingSpeed {
 }
 
 export const walkingSpeeds: WalkingSpeed[] = [
-  { name: "very_slow", speedKmh: 3, label: "だらだら歩く (3 km/h)" },
-  { name: "slow", speedKmh: 4, label: "ゆっくり歩く (4 km/h)" },
-  { name: "normal", speedKmh: 5, label: "普通に歩く (5 km/h)" }
+  { name: "slow", speedKmh: 3, label: "ゆっくり" },
+  { name: "normal", speedKmh: 4, label: "普通" },
+  { name: "fast", speedKmh: 5, label: "速い" }
 ];
 
 export type Direction = "clockwise" | "counterclockwise";
