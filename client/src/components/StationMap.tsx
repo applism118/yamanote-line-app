@@ -69,9 +69,9 @@ export default function StationMap({
     "田町": { dy: 30, anchor: "middle" },
     "新橋": { dy: 30, anchor: "middle" },
     "有楽町": { dy: 30, anchor: "middle" },
-    "品川": { dy: 30, dx: 50, anchor: "start" },  // 円の下側に表示
+    "品川": { dy: 15, dx: 0, anchor: "middle" },  // アイコンの真下に配置
     "東京": { dy: 30, anchor: "middle" },
-    "神田": { dy: 30, dx: -50, anchor: "end" },  // 円の下側に表示
+    "神田": { dy: 15, dx: 0, anchor: "middle" },  // アイコンの真下に配置
     "新宿": { dx: -8 },
     "渋谷": { dx: -8 },
     "高田馬場": { dy: -20 },
