@@ -36,9 +36,36 @@ export default function StationMap({
   // Function to calculate color intensity based on distance
   const getPathColor = (distance: number) => {
     const normalizedDistance = (distance - minDistance) / (maxDistance - minDistance);
-    const baseOpacity = 0.2; // minimum opacity
-    const opacity = baseOpacity + (normalizedDistance * 0.8); // scale from baseOpacity to 1
+    const baseOpacity = 0.15; // minimum opacity を下げてコントラストを強調
+    const opacity = baseOpacity + (normalizedDistance * 0.85); // scale from baseOpacity to 1
     return `rgba(34, 197, 94, ${opacity})`; // rgb(22, 163, 74) is green-600
+  };
+
+  // Helper function to check if a segment is part of the selected route
+  const isSegmentInRoute = (fromIdx: number, toIdx: number) => {
+    if (!selectedFrom || !selectedTo) return false;
+
+    const startIdx = stations.findIndex(s => s.name === selectedFrom);
+    const endIdx = stations.findIndex(s => s.name === selectedTo);
+
+    if (startIdx === -1 || endIdx === -1) return false;
+
+    let currentIdx = startIdx;
+    const visited = new Set<number>();
+
+    while (currentIdx !== endIdx && !visited.has(currentIdx)) {
+      visited.add(currentIdx);
+      const nextIdx = (currentIdx + 1) % stations.length;
+
+      if ((currentIdx === startIdx && nextIdx === endIdx) ||
+          (currentIdx === endIdx && nextIdx === startIdx)) {
+        return true;
+      }
+
+      currentIdx = nextIdx;
+    }
+
+    return false;
   };
 
   // Generate path segments between stations
@@ -113,15 +140,20 @@ export default function StationMap({
           className="w-full h-full"
         >
           {/* Path segments with distance-based colors */}
-          {pathSegments.map((segment, idx) => (
-            <path
-              key={idx}
-              d={segment.path}
-              fill="none"
-              stroke={getPathColor(segment.distance)}
-              strokeWidth="20"
-            />
-          ))}
+          {pathSegments.map((segment, idx) => {
+            const nextIdx = (idx + 1) % stationPositions.length;
+            const isActive = isSegmentInRoute(idx, nextIdx);
+            return (
+              <path
+                key={idx}
+                d={segment.path}
+                fill="none"
+                stroke={getPathColor(segment.distance)}
+                strokeWidth={isActive ? "24" : "20"}
+                className={isActive ? "z-10" : ""}
+              />
+            );
+          })}
 
           {/* Station dots and labels */}
           {stationPositions.map(({ station, x, y }) => {
